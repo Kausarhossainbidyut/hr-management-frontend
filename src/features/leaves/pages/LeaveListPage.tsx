@@ -17,6 +17,7 @@ const LIMIT = 10;
 export default function LeaveListPage() {
   const role = useAppSelector((state) => state.auth.user?.role);
   const canReview = role === ROLES.ADMIN || role === ROLES.MANAGER;
+  const canDelete = role === ROLES.ADMIN || role === ROLES.MANAGER;
 
   const [page, setPage] = useState(1);
   const [applyOpen, setApplyOpen] = useState(false);
@@ -79,9 +80,11 @@ export default function LeaveListPage() {
               </Button>
             </>
           )}
-          <Button variant="ghost" size="icon" onClick={() => handleDelete(row.id)} title="Delete">
-            <Trash2 className="h-4 w-4 text-danger" />
-          </Button>
+          {canDelete && (
+            <Button variant="ghost" size="icon" onClick={() => handleDelete(row.id)} title="Delete">
+              <Trash2 className="h-4 w-4 text-danger" />
+            </Button>
+          )}
         </div>
       ),
     },

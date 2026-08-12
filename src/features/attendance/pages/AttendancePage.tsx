@@ -21,6 +21,7 @@ const LIMIT = 10;
 export default function AttendancePage() {
   const role = useAppSelector((state) => state.auth.user?.role);
   const isAdmin = role === ROLES.ADMIN;
+  const isPrivileged = role === ROLES.ADMIN || role === ROLES.MANAGER;
 
   const [page, setPage] = useState(1);
   const { data, isLoading } = useGetAttendanceQuery({ page, limit: LIMIT });
@@ -59,7 +60,7 @@ export default function AttendancePage() {
   };
 
   const columns: Column<Attendance>[] = [
-    ...(isAdmin ? [{ header: "Employee", cell: (row: Attendance) => row.user?.name ?? "—" } as Column<Attendance>] : []),
+    ...(isPrivileged ? [{ header: "Employee", cell: (row: Attendance) => row.user?.name ?? "—" } as Column<Attendance>] : []),
     { header: "Date", cell: (row) => formatDate(row.date) },
     { header: "Check In", cell: (row) => formatDateTime(row.checkIn) },
     { header: "Check Out", cell: (row) => formatDateTime(row.checkOut) },

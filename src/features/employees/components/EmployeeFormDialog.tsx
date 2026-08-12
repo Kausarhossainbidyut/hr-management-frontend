@@ -66,7 +66,11 @@ export function EmployeeFormDialog({ open, onOpenChange, employee }: Props) {
   const onSubmit = async (values: CreateUserFormValues | UpdateUserFormValues) => {
     try {
       if (isEditMode && employee) {
-        const res = await updateEmployee({ id: employee.id, ...values }).unwrap();
+        // Strip empty strings so Prisma doesn't receive invalid FK values
+        const payload = Object.fromEntries(
+          Object.entries(values).filter(([, v]) => v !== "")
+        ) as UpdateUserFormValues;
+        const res = await updateEmployee({ id: employee.id, ...payload }).unwrap();
         toast.success(res.message);
       } else {
         const res = await createEmployee(values as CreateUserFormValues).unwrap();
