@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #1f3864;
+  --color-primary-light: #2e5c8a;
+}
+
+body {
+  @apply bg-background text-slate-800 antialiased;
+}
+
+* {
+  @apply border-slate-200;
+}
