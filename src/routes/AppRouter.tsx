@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
 import { lazy, Suspense } from "react";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { RoleRoute } from "./RoleRoute";
+import { GuestRoute } from "./GuestRoute";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { ROLES } from "@/lib/types/roles";
 
@@ -23,8 +24,8 @@ function PageFallback() {
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/dashboard" replace /> },
-  { path: "/login", element: <LoginPage /> },
-  { path: "/register", element: <RegisterPage /> },
+  { path: "/login", element: <GuestRoute><LoginPage /></GuestRoute> },
+  { path: "/register", element: <GuestRoute><RegisterPage /></GuestRoute> },
   {
     element: <ProtectedRoute />,
     children: [
