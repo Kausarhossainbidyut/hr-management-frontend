@@ -73,7 +73,11 @@ export function EmployeeFormDialog({ open, onOpenChange, employee }: Props) {
         const res = await updateEmployee({ id: employee.id, ...payload }).unwrap();
         toast.success(res.message);
       } else {
-        const res = await createEmployee(values as CreateUserFormValues).unwrap();
+        // Strip empty strings on create too (e.g. unselected departmentId)
+        const payload = Object.fromEntries(
+          Object.entries(values).filter(([, v]) => v !== "")
+        ) as CreateUserFormValues;
+        const res = await createEmployee(payload).unwrap();
         toast.success(res.message);
       }
       onOpenChange(false);

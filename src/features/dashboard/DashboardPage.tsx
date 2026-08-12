@@ -53,7 +53,7 @@ export default function DashboardPage() {
         description="Here's what's happening across the organization today."
       />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className={`grid grid-cols-1 gap-4 sm:grid-cols-2 ${user?.role === ROLES.ADMIN ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
         {user?.role === ROLES.ADMIN && (
           <StatCard label="Employees" value={employeesData?.meta?.total} icon={Users} isLoading={employeesLoading} />
         )}

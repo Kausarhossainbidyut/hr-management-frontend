@@ -36,25 +36,35 @@ export default function TaskListPage() {
     { header: "Due Date", cell: (row) => formatDate(row.dueDate) },
     {
       header: "Actions",
-      cell: (row) => (
-        <div className="flex gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => {
-              setEditingTask(row);
-              setFormOpen(true);
-            }}
-          >
-            <Pencil className="h-4 w-4" />
-          </Button>
-          {canManage && (
-            <Button variant="ghost" size="icon" onClick={() => setDeleteTarget(row)}>
-              <Trash2 className="h-4 w-4 text-danger" />
+      cell: (row) => {
+        const isCancelled = row.status === TASK_STATUS.CANCELLED;
+        return (
+          <div className="flex gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              disabled={isCancelled}
+              title={isCancelled ? "Cancelled tasks cannot be edited" : "Edit task"}
+              onClick={() => {
+                setEditingTask(row);
+                setFormOpen(true);
+              }}
+            >
+              <Pencil className="h-4 w-4" />
             </Button>
-          )}
-        </div>
-      ),
+            {canManage && (
+              <Button
+                variant="ghost"
+                size="icon"
+                title="Delete task"
+                onClick={() => setDeleteTarget(row)}
+              >
+                <Trash2 className="h-4 w-4 text-danger" />
+              </Button>
+            )}
+          </div>
+        );
+      },
     },
   ];
 

@@ -6,6 +6,7 @@ import { ApplyLeaveDialog } from "../components/ApplyLeaveDialog";
 import type { Leave } from "@/lib/types/models";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { DataTable, type Column } from "@/components/shared/DataTable";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { useAppSelector } from "@/app/hooks";
@@ -18,14 +19,14 @@ export default function LeaveListPage() {
   const currentUser = useAppSelector((state) => state.auth.user);
   const role = currentUser?.role;
   const canReview = role === ROLES.ADMIN || role === ROLES.MANAGER;
-  const canDelete = role === ROLES.ADMIN || role === ROLES.MANAGER;
 
   const [page, setPage] = useState(1);
   const [applyOpen, setApplyOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Leave | null>(null);
 
   const { data, isLoading } = useGetLeavesQuery({ page, limit: LIMIT });
   const [updateStatus, { isLoading: isUpdatingStatus }] = useUpdateLeaveStatusMutation();
-  const [deleteLeave] = useDeleteLeaveMutation();
+  const [deleteLeave, { isLoading: isDeleting }] = useDeleteLeaveMutation();
 
   const handleReview = async (id: string, status: "APPROVED" | "REJECTED") => {
     try {
@@ -37,10 +38,12 @@ export default function LeaveListPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      const res = await deleteLeave(id).unwrap();
+      const res = await deleteLeave(deleteTarget.id).unwrap();
       toast.success(res.message);
+      setDeleteTarget(null);
     } catch (err) {
       const message = (err as { data?: { message?: string } })?.data?.message ?? "Failed to delete leave request";
       toast.error(message);
@@ -81,8 +84,10 @@ export default function LeaveListPage() {
               </Button>
             </>
           )}
-          {canDelete && (
-            <Button variant="ghost" size="icon" onClick={() => handleDelete(row.id)} title="Delete">
+          {/* ADMIN/MANAGER can delete any leave; EMPLOYEE can only withdraw their own PENDING request */}
+          {(canReview ||
+            (row.userId === currentUser?.id && row.status === LEAVE_STATUS.PENDING)) && (
+            <Button variant="ghost" size="icon" onClick={() => setDeleteTarget(row)} title="Delete">
               <Trash2 className="h-4 w-4 text-danger" />
             </Button>
           )}
@@ -116,6 +121,20 @@ export default function LeaveListPage() {
       />
 
       <ApplyLeaveDialog open={applyOpen} onOpenChange={setApplyOpen} />
+
+      <ConfirmDialog
+        open={Boolean(deleteTarget)}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        title="Delete leave request?"
+        description={
+          deleteTarget?.userId === currentUser?.id
+            ? "This will withdraw your leave request. This action cannot be undone."
+            : `This will delete the leave request from "${deleteTarget?.user?.name ?? "this employee"}".`
+        }
+        confirmLabel="Delete"
+        isLoading={isDeleting}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }

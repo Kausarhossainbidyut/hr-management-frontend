@@ -44,7 +44,10 @@ export function TaskFormDialog({ open, onOpenChange, task }: Props) {
   const role = useAppSelector((state) => state.auth.user?.role);
   const canManage = role === ROLES.ADMIN || role === ROLES.MANAGER;
 
-  const { data: employeesRes } = useGetEmployeesQuery({ limit: 100 });
+  const { data: employeesRes } = useGetEmployeesQuery(
+    { limit: 100 },
+    { skip: isEditMode || !canManage } // only needed when creating a task as ADMIN/MANAGER
+  );
   const [createTask, { isLoading: isCreating }] = useCreateTaskMutation();
   const [updateTask, { isLoading: isUpdating }] = useUpdateTaskMutation();
   const isLoading = isCreating || isUpdating;

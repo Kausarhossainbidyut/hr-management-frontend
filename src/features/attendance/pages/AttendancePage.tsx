@@ -10,11 +10,14 @@ import {
 import type { Attendance } from "@/lib/types/models";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { DataTable, type Column } from "@/components/shared/DataTable";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAppSelector } from "@/app/hooks";
 import { ROLES } from "@/lib/types/roles";
 import { formatDate, formatDateTime } from "@/lib/utils";
+import { useGetEmployeesQuery } from "@/features/employees/employeeApi";
 
 const LIMIT = 10;
 
@@ -24,10 +27,23 @@ export default function AttendancePage() {
   const isPrivileged = role === ROLES.ADMIN || role === ROLES.MANAGER;
 
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useGetAttendanceQuery({ page, limit: LIMIT });
+  const [filterUserId, setFilterUserId] = useState<string | undefined>(undefined);
+  const [deleteTarget, setDeleteTarget] = useState<Attendance | null>(null);
+
+  // Fetch employee list for the filter dropdown (privileged only)
+  const { data: employeesRes } = useGetEmployeesQuery(
+    { limit: 200 },
+    { skip: !isPrivileged },
+  );
+
+  const { data, isLoading } = useGetAttendanceQuery({
+    page,
+    limit: LIMIT,
+    ...(isPrivileged && filterUserId ? { userId: filterUserId } : {}),
+  });
   const [checkIn, { isLoading: isCheckingIn }] = useCheckInMutation();
   const [checkOut, { isLoading: isCheckingOut }] = useCheckOutMutation();
-  const [deleteAttendance] = useDeleteAttendanceMutation();
+  const [deleteAttendance, { isLoading: isDeleting }] = useDeleteAttendanceMutation();
 
   const handleCheckIn = async () => {
     try {
@@ -49,10 +65,12 @@ export default function AttendancePage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      const res = await deleteAttendance(id).unwrap();
+      const res = await deleteAttendance(deleteTarget.id).unwrap();
       toast.success(res.message);
+      setDeleteTarget(null);
     } catch (err) {
       const message = (err as { data?: { message?: string } })?.data?.message ?? "Failed to delete record";
       toast.error(message);
@@ -70,7 +88,7 @@ export default function AttendancePage() {
           {
             header: "Actions",
             cell: (row: Attendance) => (
-              <Button variant="ghost" size="icon" onClick={() => handleDelete(row.id)}>
+              <Button variant="ghost" size="icon" onClick={() => setDeleteTarget(row)}>
                 <Trash2 className="h-4 w-4 text-danger" />
               </Button>
             ),
@@ -96,6 +114,31 @@ export default function AttendancePage() {
         }
       />
 
+      {/* Employee filter — only visible to Admin/Manager */}
+      {isPrivileged && (
+        <div className="mb-4 max-w-xs">
+          <Select
+            value={filterUserId ?? "ALL"}
+            onValueChange={(value) => {
+              setFilterUserId(value === "ALL" ? undefined : value);
+              setPage(1);
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Filter by employee" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">All employees</SelectItem>
+              {employeesRes?.data.map((emp) => (
+                <SelectItem key={emp.id} value={emp.id}>
+                  {emp.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
       <DataTable
         columns={columns}
         data={data?.data}
@@ -106,6 +149,16 @@ export default function AttendancePage() {
             ? { page: data.meta.page, limit: data.meta.limit, total: data.meta.total, onPageChange: setPage }
             : undefined
         }
+      />
+
+      <ConfirmDialog
+        open={Boolean(deleteTarget)}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        title="Delete attendance record?"
+        description={`This will permanently remove the attendance record for "${deleteTarget?.user?.name ?? "this employee"}" on ${deleteTarget ? formatDate(deleteTarget.date) : ""}.`}
+        confirmLabel="Delete"
+        isLoading={isDeleting}
+        onConfirm={handleDelete}
       />
     </div>
   );
