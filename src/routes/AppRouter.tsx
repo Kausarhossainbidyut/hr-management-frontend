@@ -5,6 +5,7 @@ import { RoleRoute } from "./RoleRoute";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { ROLES } from "@/lib/types/roles";
 
+
 const LoginPage = lazy(() => import("@/features/auth/pages/LoginPage"));
 const RegisterPage = lazy(() => import("@/features/auth/pages/RegisterPage"));
 const DashboardPage = lazy(() => import("@/features/dashboard/DashboardPage"));
@@ -14,6 +15,7 @@ const DepartmentListPage = lazy(() => import("@/features/departments/pages/Depar
 const TaskListPage = lazy(() => import("@/features/tasks/pages/TaskListPage"));
 const LeaveListPage = lazy(() => import("@/features/leaves/pages/LeaveListPage"));
 const AttendancePage = lazy(() => import("@/features/attendance/pages/AttendancePage"));
+const NotFoundPage = lazy(() => import("./NotFoundPage"));   // <-- add this line
 
 function PageFallback() {
   return <div className="flex min-h-screen items-center justify-center text-sm text-muted">Loading…</div>;
@@ -46,7 +48,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  { path: "*", element: <Navigate to="/dashboard" replace /> },
+  { path: "*", element: <NotFoundPage /> },
 ]);
 
 export function AppRouter() {
