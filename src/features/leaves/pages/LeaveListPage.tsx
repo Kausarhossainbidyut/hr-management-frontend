@@ -15,7 +15,8 @@ import { formatDate } from "@/lib/utils";
 const LIMIT = 10;
 
 export default function LeaveListPage() {
-  const role = useAppSelector((state) => state.auth.user?.role);
+  const currentUser = useAppSelector((state) => state.auth.user);
+  const role = currentUser?.role;
   const canReview = role === ROLES.ADMIN || role === ROLES.MANAGER;
   const canDelete = role === ROLES.ADMIN || role === ROLES.MANAGER;
 
@@ -58,7 +59,7 @@ export default function LeaveListPage() {
       header: "Actions",
       cell: (row) => (
         <div className="flex gap-1">
-          {canReview && row.status === LEAVE_STATUS.PENDING && (
+          {canReview && row.status === LEAVE_STATUS.PENDING && row.userId !== currentUser?.id && (
             <>
               <Button
                 variant="ghost"
