@@ -9,8 +9,9 @@ import {
 import type { TaskStatus } from "@/lib/types/roles";
 import { useCreateTaskMutation, useUpdateTaskMutation } from "../taskApi";
 import { useGetEmployeesQuery } from "@/features/employees/employeeApi";
-import { TASK_STATUS } from "@/lib/types/roles";
+import { TASK_STATUS, ROLES } from "@/lib/types/roles";
 import type { Task } from "@/lib/types/models";
+import { useAppSelector } from "@/app/hooks";
 import {
   Dialog,
   DialogContent,
@@ -30,8 +31,6 @@ type Props = {
   task?: Task | null;
 };
 
-/** Superset form shape covering both create and update fields, since this
- * one dialog + form instance is reused for both modes. */
 type TaskFormValues = {
   title: string;
   description?: string;
@@ -42,6 +41,9 @@ type TaskFormValues = {
 
 export function TaskFormDialog({ open, onOpenChange, task }: Props) {
   const isEditMode = Boolean(task);
+  const role = useAppSelector((state) => state.auth.user?.role);
+  const canManage = role === ROLES.ADMIN || role === ROLES.MANAGER;
+
   const { data: employeesRes } = useGetEmployeesQuery({ limit: 100 });
   const [createTask, { isLoading: isCreating }] = useCreateTaskMutation();
   const [updateTask, { isLoading: isUpdating }] = useUpdateTaskMutation();
@@ -102,15 +104,16 @@ export function TaskFormDialog({ open, onOpenChange, task }: Props) {
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* ADMIN/MANAGER can edit title and description; EMPLOYEE sees them read-only */}
           <div className="space-y-1.5">
             <Label htmlFor="title">Title</Label>
-            <Input id="title" {...register("title")} />
+            <Input id="title" {...register("title")} disabled={isEditMode && !canManage} />
             {errors.title && <p className="text-xs text-danger">{errors.title.message}</p>}
           </div>
 
           <div className="space-y-1.5">
             <Label htmlFor="description">Description</Label>
-            <Textarea id="description" rows={3} {...register("description")} />
+            <Textarea id="description" rows={3} {...register("description")} disabled={isEditMode && !canManage} />
           </div>
 
           {!isEditMode && (
@@ -162,10 +165,13 @@ export function TaskFormDialog({ open, onOpenChange, task }: Props) {
             </div>
           )}
 
-          <div className="space-y-1.5">
-            <Label htmlFor="dueDate">Due date</Label>
-            <Input id="dueDate" type="date" {...register("dueDate")} />
-          </div>
+          {/* ADMIN/MANAGER can also change due date */}
+          {(!isEditMode || canManage) && (
+            <div className="space-y-1.5">
+              <Label htmlFor="dueDate">Due date</Label>
+              <Input id="dueDate" type="date" {...register("dueDate")} />
+            </div>
+          )}
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

@@ -37,7 +37,9 @@ export default function DashboardPage() {
   const isPrivileged = user?.role === ROLES.ADMIN || user?.role === ROLES.MANAGER;
 
   const { data: tasksData, isLoading: tasksLoading } = useGetTasksQuery({ limit: 1 });
-  const { data: leavesData, isLoading: leavesLoading } = useGetLeavesQuery({ limit: 1, status: "PENDING" });
+  const { data: leavesData, isLoading: leavesLoading } = useGetLeavesQuery(
+    isPrivileged ? { limit: 1, status: "PENDING" } : { limit: 1 }
+  );
   const { data: attendanceData, isLoading: attendanceLoading } = useGetAttendanceQuery({ limit: 1 });
   const { data: employeesData, isLoading: employeesLoading } = useGetEmployeesQuery(
     { limit: 1 },
