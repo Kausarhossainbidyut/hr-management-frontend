@@ -12,7 +12,7 @@ import { logoutAndClearCache } from "@/features/auth/authSlice";
  */
 export const authErrorMiddleware: Middleware = (store) => (next) => (action) => {
   if (isRejectedWithValue(action) && (action.payload as { status?: number })?.status === 401) {
-    store.dispatch(logoutAndClearCache());
+    (store.dispatch as (action: unknown) => unknown)(logoutAndClearCache());
     if (window.location.pathname !== "/login") {
       window.location.replace("/login");
     }
