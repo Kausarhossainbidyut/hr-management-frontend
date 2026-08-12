@@ -65,7 +65,7 @@ export default function DashboardPage() {
           isLoading={leavesLoading}
         />
         <StatCard
-          label="Attendance Records"
+          label={isPrivileged ? "Total Attendance Records" : "My Attendance Records"}
           value={attendanceData?.meta?.total}
           icon={Clock}
           isLoading={attendanceLoading}

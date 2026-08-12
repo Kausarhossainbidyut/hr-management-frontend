@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -31,11 +32,17 @@ export function ApplyLeaveDialog({
     formState: { errors },
   } = useForm<ApplyLeaveFormValues>({ resolver: zodResolver(applyLeaveSchema) });
 
+  // Reset the form every time the dialog opens so stale values never show
+  useEffect(() => {
+    if (open) {
+      reset({ reason: "", fromDate: "", toDate: "" });
+    }
+  }, [open, reset]);
+
   const onSubmit = async (values: ApplyLeaveFormValues) => {
     try {
       const res = await applyLeave(values).unwrap();
       toast.success(res.message);
-      reset();
       onOpenChange(false);
     } catch (err) {
       const message =

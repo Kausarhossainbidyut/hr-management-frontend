@@ -25,6 +25,7 @@ export const updateTaskSchema = z.object({
   title: z.string().min(2).optional(),
   description: z.string().optional(),
   status: taskStatusEnum.optional(),
+  // Empty string from <input type="date"> means "clear the date" → send null
   dueDate: z.string().optional(),
 });
 export type UpdateTaskFormValues = z.infer<typeof updateTaskSchema>;

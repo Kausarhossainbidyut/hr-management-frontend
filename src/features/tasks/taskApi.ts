@@ -45,7 +45,15 @@ export const taskApi = baseApi.injectEndpoints({
       query: ({ id, dueDate, ...rest }) => ({
         url: `/tasks/${id}`,
         method: "PATCH",
-        body: { ...rest, dueDate: dueDate ? toIsoDateTime(dueDate) : undefined },
+        body: {
+          ...rest,
+          // dueDate === ""  → user cleared the date input → send null to backend
+          // dueDate is a valid date string  → convert to ISO datetime
+          // dueDate === undefined → field not changed → omit from body
+          ...(dueDate !== undefined
+            ? { dueDate: dueDate === "" ? null : toIsoDateTime(dueDate) }
+            : {}),
+        },
       }),
       invalidatesTags: (_result, _error, { id }) => [
         { type: "Task", id },
