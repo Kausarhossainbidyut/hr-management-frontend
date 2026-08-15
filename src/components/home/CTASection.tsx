@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Zap, ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, Zap } from "lucide-react";
 
 export function CTASection() {
   return (
