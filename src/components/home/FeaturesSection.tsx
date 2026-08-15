@@ -80,17 +80,21 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="py-20 px-4 bg-gradient-to-br from-blue-50 to-indigo-50">
+    <section id="features" className="py-20 px-4 relative overflow-hidden">
+      {/* Dark Background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-800/50 via-gray-900/30 to-gray-800/50 -z-10" />
+      
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center space-x-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
-            <Target className="w-4 h-4" />
+          <div className="inline-flex items-center space-x-2 bg-gray-800/80 backdrop-blur-md text-blue-400 px-5 py-2.5 rounded-full text-sm font-semibold mb-6 border border-blue-500/30 shadow-lg shadow-blue-500/20">
+            <Target className="w-4 h-4 animate-pulse" />
             <span>Comprehensive Features</span>
           </div>
-          <h2 className="text-5xl font-bold text-gray-900 mb-6">
-            Everything You Need in One Place
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            Everything You Need in{" "}
+            <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">One Place</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
             Powerful tools designed to simplify HR management and boost organizational efficiency
           </p>
         </div>
@@ -98,21 +102,23 @@ export function FeaturesSection() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group bg-white rounded-2xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500"
-              style={{ animationDelay: `${feature.delay}ms` }}
+              className="group relative bg-gray-800/80 backdrop-blur-md rounded-2xl p-8 shadow-lg border border-gray-700/50 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-2 hover:border-blue-500/50 transition-all duration-500"
             >
-              <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
-                <feature.icon className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                {feature.title}
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                {feature.description}
-              </p>
-              <div className="mt-4 flex items-center text-blue-600 font-semibold group-hover:translate-x-2 transition-transform">
-                <span className="text-sm">Learn more</span>
-                <ChevronRight className="w-4 h-4 ml-1" />
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-purple-600/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="relative">
+                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl shadow-blue-500/50`}>
+                  <feature.icon className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-400 leading-relaxed text-sm mb-4">
+                  {feature.description}
+                </p>
+                <div className="flex items-center text-blue-400 font-semibold group-hover:translate-x-2 transition-transform text-sm">
+                  <span>Learn more</span>
+                  <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                </div>
               </div>
             </div>
           ))}

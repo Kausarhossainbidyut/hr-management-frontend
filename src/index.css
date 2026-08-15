@@ -8,7 +8,7 @@
 }
 
 body {
-  @apply bg-background text-slate-800 antialiased;
+  @apply bg-gray-900 text-slate-100 antialiased;
 }
 
 * {
@@ -48,6 +48,24 @@ body {
   }
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
+  }
+}
+
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
@@ -65,25 +83,67 @@ body {
   animation: pulse-slow 4s ease-in-out infinite;
 }
 
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - Dark theme */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: linear-gradient(180deg, #1f2937, #111827);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #3b82f6, #6366f1);
-  border-radius: 5px;
+  background: linear-gradient(180deg, #3b82f6, #6366f1, #8b5cf6);
+  border-radius: 10px;
+  border: 2px solid #1f2937;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #2563eb, #4f46e5);
+  background: linear-gradient(180deg, #2563eb, #4f46e5, #7c3aed);
+}
+
+/* Selection color - Dark theme */
+::selection {
+  background: rgba(59, 130, 246, 0.4);
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background: rgba(59, 130, 246, 0.4);
+  color: #ffffff;
 }

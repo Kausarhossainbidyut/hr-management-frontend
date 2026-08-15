@@ -13,7 +13,7 @@ import {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900 overflow-x-hidden">
       <Navbar />
       <HeroSection />
       <StatsSection />

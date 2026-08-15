@@ -29,17 +29,19 @@ const testimonials = [
 
 export function TestimonialsSection() {
   return (
-    <section id="testimonials" className="py-20 px-4 bg-gradient-to-br from-purple-50 to-pink-50">
+    <section id="testimonials" className="py-20 px-4 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-800/50 via-gray-900/30 to-gray-800/50 -z-10" />
+      
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center space-x-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
-            <MessageSquare className="w-4 h-4" />
+          <div className="inline-flex items-center space-x-2 bg-gray-800/80 backdrop-blur-md text-purple-400 px-5 py-2.5 rounded-full text-sm font-semibold mb-6 border border-purple-500/30 shadow-lg shadow-purple-500/20">
+            <MessageSquare className="w-4 h-4 animate-pulse" />
             <span>Customer Reviews</span>
           </div>
-          <h2 className="text-5xl font-bold text-gray-900 mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Loved by HR Teams Worldwide
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
             Don't just take our word for it - hear what our customers have to say
           </p>
         </div>
@@ -47,25 +49,25 @@ export function TestimonialsSection() {
           {testimonials.map((testimonial, index) => (
             <div
               key={index}
-              className="bg-white rounded-2xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300"
+              className="bg-gray-800/80 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-gray-700/50 hover:shadow-2xl hover:shadow-purple-500/20 hover:-translate-y-1 hover:border-purple-500/50 transition-all duration-300"
             >
               <div className="flex items-center space-x-1 mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
                 ))}
               </div>
-              <p className="text-gray-700 mb-6 italic leading-relaxed">
+              <p className="text-gray-300 mb-6 italic leading-relaxed">
                 "{testimonial.text}"
               </p>
               <div className="flex items-center space-x-4">
                 <img 
                   src={testimonial.image} 
                   alt={testimonial.name}
-                  className="w-14 h-14 rounded-full object-cover border-2 border-blue-200"
+                  className="w-14 h-14 rounded-full object-cover border-2 border-blue-500/50 shadow-lg shadow-blue-500/30"
                 />
                 <div>
-                  <p className="font-bold text-gray-900">{testimonial.name}</p>
-                  <p className="text-sm text-gray-600">{testimonial.role}</p>
+                  <p className="font-bold text-white">{testimonial.name}</p>
+                  <p className="text-sm text-gray-400">{testimonial.role}</p>
                   <p className="text-xs text-gray-500">{testimonial.company}</p>
                 </div>
               </div>

@@ -3,16 +3,18 @@ import { Zap, ArrowRight, CheckCircle2 } from "lucide-react";
 
 export function CTASection() {
   return (
-    <section className="py-20 px-4">
+    <section className="py-20 px-4 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-800/50 via-gray-900/30 to-gray-800/50 -z-10" />
+      
       <div className="max-w-5xl mx-auto">
-        <div className="relative bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-3xl p-12 md:p-16 shadow-2xl text-center overflow-hidden">
+        <div className="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-3xl p-12 md:p-16 shadow-2xl shadow-blue-500/30 text-center overflow-hidden">
           <div className="absolute inset-0 bg-grid-white/10" />
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
           
           <div className="relative z-10">
-            <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-full text-sm font-semibold mb-8">
-              <Zap className="w-5 h-5 text-yellow-300" />
+            <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-full text-sm font-semibold mb-8 animate-pulse">
+              <Zap className="w-5 h-5 text-yellow-300 animate-bounce" />
               <span>Limited Time Offer</span>
             </div>
             
@@ -34,13 +36,13 @@ export function CTASection() {
               </Link>
               <Link
                 to="/login"
-                className="px-10 py-5 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 transition-all font-bold text-lg border-2 border-white/30"
+                className="px-10 py-5 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 transition-all font-bold text-lg border-2 border-white/30 hover:border-white/50"
               >
                 Schedule Demo
               </Link>
             </div>
 
-            <div className="flex items-center justify-center space-x-8 mt-12">
+            <div className="flex flex-wrap items-center justify-center gap-6 mt-12">
               <div className="flex items-center space-x-2 text-white/90">
                 <CheckCircle2 className="w-5 h-5" />
                 <span className="text-sm">No credit card needed</span>
